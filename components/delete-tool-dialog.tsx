@@ -73,3 +73,4 @@ export function DeleteToolDialog({ tool, onToolDeleted }: DeleteToolDialogProps)
   )
 }
 
+

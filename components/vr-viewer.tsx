@@ -18,6 +18,38 @@ export function VRViewer({ tool, onClose }: VRViewerProps) {
   const [zoom, setZoom] = useState(1)
   const [isDragging, setIsDragging] = useState(false)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
+  const [isModelLoading, setIsModelLoading] = useState(true)
+  const [modelLoaded, setModelLoaded] = useState(false)
+
+  // Cargar el modelo 3D solo cuando se monte el componente (lazy loading)
+  useEffect(() => {
+    if (!tool.modelUrl) {
+      setIsModelLoading(false)
+      setModelLoaded(false)
+      return
+    }
+
+    // Simular carga del modelo 3D (aquí se cargaría el archivo .obj)
+    // En el futuro, aquí se implementaría la carga real del modelo 3D
+    const loadModel = async () => {
+      setIsModelLoading(true)
+      try {
+        // Simular tiempo de carga del modelo
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        
+        // Aquí se cargaría el modelo 3D real usando Three.js u otra librería
+        // Por ahora solo marcamos como cargado
+        setModelLoaded(true)
+      } catch (error) {
+        console.error("Error al cargar el modelo 3D:", error)
+        setModelLoaded(false)
+      } finally {
+        setIsModelLoading(false)
+      }
+    }
+
+    loadModel()
+  }, [tool.modelUrl])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -130,16 +162,25 @@ export function VRViewer({ tool, onClose }: VRViewerProps) {
 
         {/* Visor 3D */}
         <div className="relative bg-gradient-to-br from-secondary to-muted">
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={600}
-            className="w-full h-[400px] md:h-[600px] cursor-move"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          />
+          {isModelLoading && tool.modelUrl ? (
+            <div className="w-full h-[400px] md:h-[600px] flex items-center justify-center">
+              <div className="text-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                <p className="text-muted-foreground">Cargando modelo 3D...</p>
+              </div>
+            </div>
+          ) : (
+            <canvas
+              ref={canvasRef}
+              width={800}
+              height={600}
+              className="w-full h-[400px] md:h-[600px] cursor-move"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            />
+          )}
 
           {/* Controles */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-background/90 backdrop-blur-sm rounded-lg p-2 border border-border">
