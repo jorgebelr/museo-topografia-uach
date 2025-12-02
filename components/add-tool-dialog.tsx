@@ -56,7 +56,9 @@ export function AddToolDialog({ onToolAdded }: AddToolDialogProps) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [isUploadingModel, setIsUploadingModel] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string>("")
+  const [uploadedModel, setUploadedModel] = useState<string>("")
 
   const form = useForm<ToolFormValues>({
     resolver: zodResolver(toolFormSchema),
@@ -76,6 +78,7 @@ export function AddToolDialog({ onToolAdded }: AddToolDialogProps) {
     if (!open) {
       form.reset()
       setUploadedImage("")
+      setUploadedModel("")
     }
   }, [open, form])
 
@@ -106,12 +109,40 @@ export function AddToolDialog({ onToolAdded }: AddToolDialogProps) {
     }
   }
 
+  async function handleModelUpload(file: File) {
+    setIsUploadingModel(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/upload-model", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Error al subir el modelo 3D")
+      }
+
+      const data = await response.json()
+      setUploadedModel(data.path)
+      form.setValue("modelUrl", data.path)
+    } catch (error) {
+      console.error("Error al subir modelo:", error)
+      alert(error instanceof Error ? error.message : "Error al subir el modelo 3D")
+    } finally {
+      setIsUploadingModel(false)
+    }
+  }
+
   async function onSubmit(values: ToolFormValues) {
     setIsSubmitting(true)
     try {
       const newTool = await addTool(values)
       form.reset()
       setUploadedImage("")
+      setUploadedModel("")
       setOpen(false)
       onToolAdded?.(newTool)
       // TODO: Mostrar notificación de éxito
@@ -252,15 +283,44 @@ export function AddToolDialog({ onToolAdded }: AddToolDialogProps) {
               name="modelUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL del Modelo 3D (Opcional)</FormLabel>
+                  <FormLabel>Modelo 3D (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="/models/nombre-modelo.glb"
-                      {...field}
-                    />
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept=".obj"
+                          className="cursor-pointer"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              handleModelUpload(file)
+                            }
+                          }}
+                          disabled={isUploadingModel}
+                        />
+                        {isUploadingModel && (
+                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        )}
+                      </div>
+                      {uploadedModel && (
+                        <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                          <span className="text-sm text-muted-foreground">
+                            Modelo 3D subido:
+                          </span>
+                          <span className="text-sm font-medium text-foreground">
+                            {uploadedModel}
+                          </span>
+                        </div>
+                      )}
+                      <Input
+                        type="hidden"
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormDescription>
-                    Ruta al archivo del modelo 3D en formato GLB
+                    Selecciona un archivo .obj desde tu computadora (máximo 50MB)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
