@@ -1,19 +1,27 @@
 import { NextRequest, NextResponse } from "next/server"
-import { readFileSync, writeFileSync } from "fs"
-import { join } from "path"
-import type { Tool } from "@/components/tools-gallery"
+import connectDB from "@/lib/mongodb"
+import Tool from "@/models/Tool"
+import type { Tool as ToolType } from "@/components/tools-gallery"
 
-// Esta función será reemplazada por operaciones de base de datos
 export async function GET() {
   try {
-    // TODO: Reemplazar con consulta a base de datos
-    // Ejemplo: const tools = await db.tools.findMany()
+    await connectDB()
     
-    const filePath = join(process.cwd(), "data", "tools.json")
-    const fileContents = readFileSync(filePath, "utf8")
-    const tools = JSON.parse(fileContents) as Tool[]
+    const tools = await Tool.find({}).sort({ createdAt: -1 }).lean()
     
-    return NextResponse.json(tools)
+    // Convertir a formato Tool (con id en lugar de _id)
+    const formattedTools: ToolType[] = tools.map((tool) => ({
+      id: tool._id.toString(),
+      name: tool.name,
+      year: tool.year,
+      type: tool.type,
+      image: tool.image,
+      modelUrl: tool.modelUrl || undefined,
+      era: tool.era || undefined,
+      description: tool.description || undefined,
+    }))
+    
+    return NextResponse.json(formattedTools)
   } catch (error) {
     console.error("Error al leer herramientas:", error)
     return NextResponse.json(
@@ -23,9 +31,10 @@ export async function GET() {
   }
 }
 
-// Esta función será reemplazada por operaciones de base de datos
 export async function POST(request: NextRequest) {
   try {
+    await connectDB()
+    
     const body = await request.json()
     const { name, year, type, image, modelUrl, era, description } = body
 
@@ -37,32 +46,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generar ID único
-    const id = `tool-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-
-    const newTool: Tool = {
-      id,
+    // Crear nueva herramienta en MongoDB
+    const newTool = new Tool({
       name,
       year,
       type,
       image,
-      modelUrl: modelUrl || undefined,
-      era: era || undefined,
-      description: description || undefined,
+      modelUrl: modelUrl || null,
+      era: era || null,
+      description: description || null,
+    })
+
+    const savedTool = await newTool.save()
+
+    // Convertir a formato Tool (con id en lugar de _id)
+    const formattedTool: ToolType = {
+      id: savedTool._id.toString(),
+      name: savedTool.name,
+      year: savedTool.year,
+      type: savedTool.type,
+      image: savedTool.image,
+      modelUrl: savedTool.modelUrl || undefined,
+      era: savedTool.era || undefined,
+      description: savedTool.description || undefined,
     }
 
-    // TODO: Reemplazar con inserción en base de datos
-    // Ejemplo: const savedTool = await db.tools.create({ data: newTool })
-    
-    // Por ahora, escribimos en el archivo JSON
-    const filePath = join(process.cwd(), "data", "tools.json")
-    const fileContents = readFileSync(filePath, "utf8")
-    const tools = JSON.parse(fileContents) as Tool[]
-    
-    tools.push(newTool)
-    writeFileSync(filePath, JSON.stringify(tools, null, 2), "utf8")
-
-    return NextResponse.json(newTool, { status: 201 })
+    return NextResponse.json(formattedTool, { status: 201 })
   } catch (error) {
     console.error("Error al agregar herramienta:", error)
     return NextResponse.json(
