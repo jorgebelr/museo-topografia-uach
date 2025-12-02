@@ -104,3 +104,31 @@ export async function addTool(tool: Omit<Tool, "id">): Promise<Tool> {
   return response.json()
 }
 
+// Actualizar una herramienta existente
+export async function updateTool(id: string, tool: Partial<Omit<Tool, "id">>): Promise<Tool> {
+  const response = await fetch(`/api/tools/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tool),
+  })
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar la herramienta")
+  }
+
+  return response.json()
+}
+
+// Eliminar una herramienta
+export async function deleteTool(id: string): Promise<void> {
+  const response = await fetch(`/api/tools/${id}`, {
+    method: "DELETE",
+  })
+
+  if (!response.ok) {
+    throw new Error("Error al eliminar la herramienta")
+  }
+}
+

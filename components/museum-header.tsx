@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { RoleSwitcher } from "@/components/role-switcher"
 import { useEffect, useState } from "react"
 
 export function MuseumHeader() {
@@ -55,6 +56,7 @@ export function MuseumHeader() {
             >
               Catálogo
             </Link>
+            <RoleSwitcher />
             <Button
               variant="ghost"
               size="icon"

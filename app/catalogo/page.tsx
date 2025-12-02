@@ -8,6 +8,7 @@ import { AddToolDialog } from "@/components/add-tool-dialog"
 import { Button } from "@/components/ui/button"
 import { SlidersHorizontal } from "lucide-react"
 import { getTools } from "@/lib/tools-data"
+import { useUserRole } from "@/contexts/user-role-context"
 import type { Tool } from "@/components/tools-gallery"
 import { MuseumFooter } from "@/components/museum-footer"
 
@@ -43,6 +44,7 @@ function groupByDecade(tools: Tool[]): Map<number, Tool[]> {
 }
 
 export default function CatalogoPage() {
+  const { isEditor } = useUserRole()
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null)
   const [tools, setTools] = useState<Tool[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -80,6 +82,23 @@ export default function CatalogoPage() {
     })
   }
 
+  function handleToolUpdated(updatedTool: Tool) {
+    setTools((prev) => {
+      const updated = prev.map((t) => (t.id === updatedTool.id ? updatedTool : t))
+      // Reordenar después de actualizar
+      updated.sort((a, b) => {
+        const yearA = parseInt(a.year) || 0
+        const yearB = parseInt(b.year) || 0
+        return yearA - yearB
+      })
+      return updated
+    })
+  }
+
+  function handleToolDeleted(toolId: string) {
+    setTools((prev) => prev.filter((t) => t.id !== toolId))
+  }
+
   const toolsByDecade = groupByDecade(tools)
   const decades = Array.from(toolsByDecade.keys()).sort((a, b) => a - b)
 
@@ -112,13 +131,15 @@ export default function CatalogoPage() {
               Explora nuestra colección histórica de instrumentos topográficos organizados por década
             </p>
             
-            <div className="flex items-center gap-4 flex-wrap">
-              <AddToolDialog onToolAdded={handleToolAdded} />
-              <Button variant="default" className="gap-2 bg-primary hover:bg-primary/90">
-                <SlidersHorizontal className="h-4 w-4" />
-                Filtrar y Ordenar
-              </Button>
-            </div>
+            {isEditor && (
+              <div className="flex items-center gap-4 flex-wrap">
+                <AddToolDialog onToolAdded={handleToolAdded} />
+                <Button variant="default" className="gap-2 bg-primary hover:bg-primary/90">
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filtrar y Ordenar
+                </Button>
+              </div>
+            )}
           </div>
 
           {isLoading ? (
@@ -149,7 +170,9 @@ export default function CatalogoPage() {
                         <ToolCard 
                           key={tool.id} 
                           tool={tool} 
-                          onClick={() => setSelectedTool(tool)} 
+                          onClick={() => setSelectedTool(tool)}
+                          onToolUpdated={handleToolUpdated}
+                          onToolDeleted={handleToolDeleted}
                         />
                       ))}
                     </div>

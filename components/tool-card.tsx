@@ -3,14 +3,21 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { useUserRole } from "@/contexts/user-role-context"
+import { EditToolDialog } from "@/components/edit-tool-dialog"
+import { DeleteToolDialog } from "@/components/delete-tool-dialog"
 import type { Tool } from "@/components/tools-gallery"
 
 interface ToolCardProps {
   tool: Tool
   onClick: () => void
+  onToolUpdated?: (tool: Tool) => void
+  onToolDeleted?: (toolId: string) => void
 }
 
-export function ToolCard({ tool, onClick }: ToolCardProps) {
+export function ToolCard({ tool, onClick, onToolUpdated, onToolDeleted }: ToolCardProps) {
+  const { isEditor } = useUserRole()
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden bg-card">
       <CardContent className="p-0">
@@ -29,9 +36,18 @@ export function ToolCard({ tool, onClick }: ToolCardProps) {
             <p className="text-sm text-primary">Tipo: {tool.type}</p>
           </div>
 
-          <Button onClick={onClick} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-medium">
-            Ver Detalles
-          </Button>
+          <div className="space-y-2">
+            <Button onClick={onClick} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-medium">
+              Ver Detalles
+            </Button>
+            
+            {isEditor && (
+              <div className="flex gap-2">
+                <EditToolDialog tool={tool} onToolUpdated={onToolUpdated} />
+                <DeleteToolDialog tool={tool} onToolDeleted={onToolDeleted} />
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
