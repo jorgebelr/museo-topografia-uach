@@ -44,13 +44,13 @@ export function MuseumHeader() {
 
           <nav className="flex items-center gap-4">
             <Link
-              href={isHomePage ? "#inicio" : "/#inicio"}
+              href="/"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Inicio
             </Link>
             <Link
-              href={isHomePage ? "#catalogo" : "/#catalogo"}
+              href="/catalogo"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Catálogo

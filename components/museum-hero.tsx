@@ -1,4 +1,7 @@
 import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 
 export function MuseumHero() {
   return (
@@ -29,10 +32,17 @@ export function MuseumHero() {
             Bienvenido al Museo Virtual de Topografía
           </h2>
 
-          <p className="text-lg md:text-xl text-foreground/90 mb-4 text-pretty leading-relaxed drop-shadow-md">
-            Explora la colección histórica de instrumentos topográficos de la Universidad Autónoma de Chihuahua. Haz
-            clic en cualquier herramienta para verla en 3D interactivo.
+          <p className="text-lg md:text-xl text-foreground/90 mb-8 text-pretty leading-relaxed drop-shadow-md">
+            Explora la colección histórica de instrumentos topográficos de la Universidad Autónoma de Chihuahua. 
+            Descubre instrumentos desde diferentes décadas y visualízalos en 3D interactivo.
           </p>
+
+          <Link href="/catalogo">
+            <Button size="lg" className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
+              Ver Catálogo
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
