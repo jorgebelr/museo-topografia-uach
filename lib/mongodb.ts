@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const MONGODB_URI = process.env.MONGODB_URI!
+const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -20,10 +20,12 @@ if (!cached) {
 }
 
 async function connectDB() {
+  // Si ya hay una conexión activa, retornarla
   if (cached.conn) {
     return cached.conn
   }
 
+  // Si no hay una promesa de conexión en curso, crear una
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
@@ -45,5 +47,3 @@ async function connectDB() {
 }
 
 export default connectDB
-
-

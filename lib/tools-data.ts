@@ -64,13 +64,10 @@ const defaultTools: Tool[] = [
   },
 ]
 
-// Esta función será reemplazada por una llamada a la base de datos
 export async function getTools(): Promise<Tool[]> {
-  // Llamada a la API route que maneja la lectura
-  // TODO: En producción, esto puede ser reemplazado por una llamada directa a la base de datos
   try {
     const response = await fetch("/api/tools", {
-      cache: "no-store", // Para obtener datos actualizados
+      cache: "no-store",
     })
 
     if (!response.ok) {
@@ -79,16 +76,12 @@ export async function getTools(): Promise<Tool[]> {
 
     return response.json()
   } catch (error) {
-    console.error("Error al cargar herramientas:", error)
-    // Fallback a datos por defecto si hay error
+    // Fallback silencioso a datos por defecto
     return defaultTools
   }
 }
 
-// Esta función será reemplazada por una llamada a la base de datos
 export async function addTool(tool: Omit<Tool, "id">): Promise<Tool> {
-  // Llamada a la API route que maneja la persistencia
-  // TODO: En producción, esto puede ser reemplazado por una llamada directa a la base de datos
   const response = await fetch("/api/tools", {
     method: "POST",
     headers: {
@@ -104,7 +97,6 @@ export async function addTool(tool: Omit<Tool, "id">): Promise<Tool> {
   return response.json()
 }
 
-// Actualizar una herramienta existente
 export async function updateTool(id: string, tool: Partial<Omit<Tool, "id">>): Promise<Tool> {
   const response = await fetch(`/api/tools/${id}`, {
     method: "PUT",
@@ -121,7 +113,6 @@ export async function updateTool(id: string, tool: Partial<Omit<Tool, "id">>): P
   return response.json()
 }
 
-// Eliminar una herramienta
 export async function deleteTool(id: string): Promise<void> {
   const response = await fetch(`/api/tools/${id}`, {
     method: "DELETE",
@@ -131,4 +122,3 @@ export async function deleteTool(id: string): Promise<void> {
     throw new Error("Error al eliminar la herramienta")
   }
 }
-
