@@ -62,6 +62,26 @@ const defaultTools: Tool[] = [
     era: "1998",
     description: "Mira topográfica profesional para mediciones de altura.",
   },
+  {
+    id: "teodolito-552",
+    name: "Teodolito - 552",
+    year: "1955",
+    type: "Donación",
+    image: "/images/1764709752520-vh3pw4m3znq.jpg",
+    modelUrl: null,
+    era: "1950",
+    description: "Adjuntar descripción del producto",
+  },
+  {
+    id: "topografia-antiguo",
+    name: "Topografía - antigüo",
+    year: "1983",
+    type: "Adquisición",
+    image: "/images/1764710979729-ncoqevz8obe.jpg",
+    modelUrl: null,
+    era: "1983",
+    description: "Instrumento de topografía",
+  },
 ]
 
 export async function getTools(): Promise<Tool[]> {
