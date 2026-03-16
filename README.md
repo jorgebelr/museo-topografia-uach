@@ -2,119 +2,75 @@
 
 Museo Virtual de Topografía de la Facultad de Ingeniería de la Universidad Autónoma de Chihuahua.
 
-## 🎯 Características
+## 🎯 Características y Estado Actual
 
-- **Galería de Instrumentos**: Visualiza la colección histórica de instrumentos topográficos
-- **Vista 3D Interactiva**: Explora modelos 3D de los instrumentos con rotación y zoom
-- **Modo Oscuro/Claro**: Interfaz adaptable con soporte para dark mode
-- **Gestión de Contenido**: Agrega nuevos modelos al museo mediante formulario
-- **Subida de Archivos**: Sistema de carga de imágenes automático
+- **Galería de Instrumentos**: Visualización de la colección histórica de instrumentos topográficos.
+- **Vista 3D Interactiva**: Exploración de modelos `.obj` con OrbitControls personalizados (rotación X/Y manual y zoom) que preservan la calidad original del objeto.
+- **Modelos 3D de Prueba Incluidos**: `Castor Ingeniería` y `Dragón Alcancía`.
+- **Modo Oscuro/Claro**: Interfaz adaptable con soporte nativo.
+- **Gestión de Contenido (Frontend)**: Interfaz de captura para agregar nuevos modelos al museo y sus validaciones (Zod/React Hook Form).
 
-## 🎨 Paleta de Colores
+---
 
-- **Azul/Cian**: `#007AA6` - Color primario
-- **Naranja/Terracota**: Color de acento
-- **Colores Neutros**: Para fondos y texto
+## ⚠️ AVISO PARA EL PRÓXIMO EQUIPO DE DESARROLLO
 
-## 🚀 Tecnologías
+**Funcionalidad Pendiente: Conexión con Base de Datos**
+
+Actualmente, el flujo de datos (guardar nuevas herramientas, editar o eliminar) **está simulado en el frontend**.
+- Las tarjetas mostradas en la galería inicial provienen de una constante `defaultTools` en el archivo `lib/tools-data.ts`.
+- Los datos y las llamadas asíncronas están preparadas, pero la API route y la integración real con una base de datos (por ejemplo, MongoDB, PostgreSQL, Firebase) **debe ser implementada**.
+- **Acción requerida:** Conectar las funciones de `lib/tools-data.ts` con el backend a construir o una Base de Datos seleccionada, y asegurar el manejo de carga de archivos (Imágenes y `.obj` de Three.js) hacia algún servicio de Storage (como AWS S3, Vercel Blob o Supabase).
+
+---
+
+## 🚀 Tecnologías Utilizadas
 
 - **Next.js 16**: Framework React con App Router
 - **TypeScript**: Tipado estático
 - **Tailwind CSS**: Estilos utilitarios
 - **shadcn/ui**: Componentes UI
-- **React Hook Form**: Manejo de formularios
-- **Zod**: Validación de esquemas
+- **React Hook Form & Zod**: Manejo y validación de formularios
+- **React Three Fiber & Drei**: Renderizado WebGL y manejo de modelos 3D (`useLoader`, `OBJLoader`, `OrbitControls`)
 
-## 📦 Instalación
+## 📦 Instalación Local
 
 ```bash
 # Instalar dependencias
-pnpm install
+npm install
+# (Se requiere tener intalado three y three-stdlib)
 
 # Ejecutar en desarrollo
-pnpm dev
+npm run dev
 
 # Construir para producción
-pnpm build
-
-# Iniciar en producción
-pnpm start
+npm run build
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura Principal del Proyecto
 
-```
+```text
 museo-topografia-uach/
 ├── app/                    # Rutas y páginas (App Router)
-│   ├── api/               # API Routes
-│   ├── globals.css        # Estilos globales
-│   └── layout.tsx         # Layout principal
-├── components/            # Componentes React
-│   ├── ui/               # Componentes UI reutilizables
-│   └── ...               # Componentes específicos
-├── lib/                   # Utilidades y funciones
-├── public/                # Archivos estáticos
-│   └── images/           # Imágenes del museo
-└── data/                  # Datos JSON (temporal)
+├── components/             # Componentes React
+│   ├── ui/                 # Componentes genéricos de shadcn
+│   ├── vr-viewer.tsx       # Componente principal del visor 3D (React Three Fiber)
+│   └── ...                 
+├── lib/                    # Utilidades y funciones
+│   └── tools-data.ts       # Central de datos y simulación de peticiones (AQUI CONECTAR DB)
+└── public/                 
+    ├── images/             # Imágenes estáticas
+    └── models/             # Aquí se deben alojar `castor.obj` y `dragon.obj` para las pruebas
 ```
 
-## 🔧 Configuración
+## 🎮 Vista 3D (Instrucciones de Uso)
 
-### Variables de Entorno
+Los modelos `.obj` no se comprimen para preservar el 100% de la calidad original que se guardará en la base de datos.
+- Puedes interactuar usando el ratón de forma libre.
+- Alternativamente, utiliza los **Botones UI flotantes** dentro de la tarjeta de "Ver Detalles", los cuales permiten rotación horizontal/vertical paso a paso o control del zoom suavizado.
 
-Crea un archivo `.env.local` si necesitas configuraciones específicas:
-
-```env
-# Ejemplo para producción
-NEXT_PUBLIC_API_URL=https://api.example.com
-```
-
-## 📝 Uso
-
-### Agregar Nuevo Modelo
-
-1. Haz clic en el botón "Agregar Modelo" en la sección de catálogo
-2. Completa el formulario con la información del instrumento
-3. Selecciona una imagen desde tu computadora
-4. La imagen se subirá automáticamente
-5. Guarda el modelo
-
-### Vista 3D
-
-- **Arrastra** para rotar el modelo
-- Usa los **controles de zoom** para acercar/alejar
-- Haz clic en "Ver Detalles" en cualquier tarjeta de instrumento
-
-## 🗄️ Base de Datos
-
-Actualmente los datos se almacenan en `data/tools.json`. El proyecto está preparado para migrar a una base de datos:
-
-- Las funciones en `lib/tools-data.ts` tienen comentarios `TODO` indicando dónde conectar la BD
-- Las API routes en `app/api/tools/route.ts` están listas para usar con una base de datos
-
-## 🎨 Personalización
-
-### Colores
-
-Los colores se definen en `app/globals.css` usando el formato OKLCH:
-
-```css
---primary: oklch(0.47 0.13 210); /* Azul #007AA6 */
---accent: oklch(0.65 0.15 40);   /* Naranja/Terracota */
-```
-
-## 📄 Licencia
-
-Este proyecto es propiedad de la Universidad Autónoma de Chihuahua.
-
-## 👥 Contribuidores
+## 🤝 Contribuidores
 
 - Facultad de Ingeniería - UACH
+- *Proyecto en transición de desarrollo*
 
----
-
-Desarrollado con ❤️ para preservar la historia de la topografía
-
-
-
-
+Desarrollado con ❤️ para preservar la historia de la topografía.
