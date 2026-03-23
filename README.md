@@ -2,7 +2,7 @@
 
 Museo Virtual de Topografía de la Facultad de Ingeniería de la Universidad Autónoma de Chihuahua.
 
-## 🎯 Características y Estado Actual
+## Características y Estado Actual
 
 - **Galería de Instrumentos**: Visualización de la colección histórica de instrumentos topográficos.
 - **Vista 3D Interactiva**: Exploración de modelos `.obj` con OrbitControls personalizados (rotación X/Y manual y zoom) que preservan la calidad original del objeto.
@@ -12,7 +12,7 @@ Museo Virtual de Topografía de la Facultad de Ingeniería de la Universidad Aut
 
 ---
 
-## ⚠️ AVISO PARA EL PRÓXIMO EQUIPO DE DESARROLLO
+## AVISO PARA EL PRÓXIMO EQUIPO DE DESARROLLO
 
 **Funcionalidad Pendiente: Conexión con Base de Datos**
 
@@ -23,7 +23,7 @@ Actualmente, el flujo de datos (guardar nuevas herramientas, editar o eliminar) 
 
 ---
 
-## 🚀 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 - **Next.js 16**: Framework React con App Router
 - **TypeScript**: Tipado estático
@@ -32,7 +32,7 @@ Actualmente, el flujo de datos (guardar nuevas herramientas, editar o eliminar) 
 - **React Hook Form & Zod**: Manejo y validación de formularios
 - **React Three Fiber & Drei**: Renderizado WebGL y manejo de modelos 3D (`useLoader`, `OBJLoader`, `OrbitControls`)
 
-## 📦 Instalación Local
+## Instalación Local
 
 ```bash
 # Instalar dependencias
@@ -46,7 +46,7 @@ npm run dev
 npm run build
 ```
 
-## 📁 Estructura Principal del Proyecto
+## Estructura Principal del Proyecto
 
 ```text
 museo-topografia-uach/
@@ -62,15 +62,14 @@ museo-topografia-uach/
     └── models/             # Aquí se deben alojar `castor.obj` y `dragon.obj` para las pruebas
 ```
 
-## 🎮 Vista 3D (Instrucciones de Uso)
+## Vista 3D (Instrucciones de Uso)
 
 Los modelos `.obj` no se comprimen para preservar el 100% de la calidad original que se guardará en la base de datos.
 - Puedes interactuar usando el ratón de forma libre.
 - Alternativamente, utiliza los **Botones UI flotantes** dentro de la tarjeta de "Ver Detalles", los cuales permiten rotación horizontal/vertical paso a paso o control del zoom suavizado.
 
-## 🤝 Contribuidores
+## Contribuidores
 
 - Facultad de Ingeniería - UACH
 - *Proyecto en transición de desarrollo*
 
-Desarrollado con ❤️ para preservar la historia de la topografía.
